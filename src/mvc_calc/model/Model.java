@@ -1,6 +1,6 @@
-package mvc_calc.modelo;
+package mvc_calc.model;
 
-public class Modelo {
+public class Model {
 	private Double num1;
 	private Double num2;
 	private Double result;

@@ -1,4 +1,4 @@
-package mvc_calc.visao;
+package mvc_calc.view;
 
 import java.awt.Rectangle;
 import java.awt.event.ActionListener;
@@ -8,30 +8,35 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
-import mvc_calc.modelo.Modelo;
+import mvc_calc.model.Model;
+
 import javax.swing.JComboBox;
 
-public class Visao extends JFrame {
+public class View extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
 	private JPanel jContentPane = null; // @jve:decl-index=0:visual-constraint="105,58"
 
-	private JTextField num1Field = null;
+	protected JTextField num1Field = null;
 
-	private JTextField num2Field = null;
+	protected JTextField num2Field = null;
 
 	private JButton equalButton = null;
 
-	private JTextField resultField = null;
+	protected JTextField resultField = null;
 
 	private JComboBox<String> comboOperacoes = null;
 
+	private NumberListener listener = new NumberListener();
+	
 	/**
 	 * This is the default constructor
 	 */
-	public Visao() {
+	public View() {
 		super();
 		initialize();
 	}
@@ -47,6 +52,28 @@ public class Visao extends JFrame {
 		this.setTitle("JFrame");
 	}
 
+	/**
+	 * This method is based on: https://stackoverflow.com/questions/3953208/value-change-listener-to-jtextfield
+	 */
+	private void initializeElements() {
+		num1Field = new JTextField();
+		num1Field.setBounds(new Rectangle(11, 16, 49, 20));
+		
+		// Listen for changes in the text
+		num1Field.getDocument().addDocumentListener(this.listener);
+		
+		num2Field = new JTextField();
+		num2Field.setBounds(new Rectangle(113, 16, 50, 20));
+		
+		// Listen for changes in the text
+		num2Field.getDocument().addDocumentListener(this.listener);
+		
+		equalButton = new JButton();
+		equalButton.setBounds(new Rectangle(174, 14, 54, 26));
+		equalButton.setText("=");
+		equalButton.setEnabled(false);
+	}
+	
 	/**
 	 * This method initializes jContentPane
 	 * 
@@ -71,10 +98,6 @@ public class Visao extends JFrame {
 	 * @return javax.swing.JTextField
 	 */
 	private JTextField getNum1Field() {
-		if (num1Field == null) {
-			num1Field = new JTextField();
-			num1Field.setBounds(new Rectangle(11, 16, 49, 20));
-		}
 		return num1Field;
 	}
 
@@ -84,10 +107,6 @@ public class Visao extends JFrame {
 	 * @return javax.swing.JTextField
 	 */
 	private JTextField getNum2Field() {
-		if (num2Field == null) {
-			num2Field = new JTextField();
-			num2Field.setBounds(new Rectangle(113, 16, 50, 20));
-		}
 		return num2Field;
 	}
 
@@ -97,12 +116,6 @@ public class Visao extends JFrame {
 	 * @return javax.swing.JButton
 	 */
 	private JButton getEqualButton() {
-		if (equalButton == null) {
-			equalButton = new JButton();
-			equalButton.setBounds(new Rectangle(174, 14, 54, 26));
-			equalButton.setText("=");
-		}
-		equalButton.setActionCommand("equal");
 		return equalButton;
 	}
 
@@ -136,7 +149,7 @@ public class Visao extends JFrame {
 	//
 	// Mecanismo de Leitura/Escrita do Modelo
 	//
-	public void escreveModelo(Modelo modelo) {
+	public void escreveModelo(Model modelo) {
 		Double num1 = modelo.getNum1();
 		Double num2 = modelo.getNum2();
 		Double result = modelo.getResult();
@@ -146,7 +159,7 @@ public class Visao extends JFrame {
 		resultField.setText(result.toString());
 	}
 
-	public Modelo leModelo() {
+	public Model leModelo() {
 		String num1s = num1Field.getText();
 		String num2s = num2Field.getText();
 		String results = resultField.getText();
@@ -163,7 +176,7 @@ public class Visao extends JFrame {
 			if (!results.equals(""))
 				result = Double.parseDouble(results);
 
-			Modelo m = new Modelo();
+			Model m = new Model();
 			m.setNum1(num1);
 			m.setNum2(num2);
 			m.setResult(result);
@@ -182,9 +195,4 @@ public class Visao extends JFrame {
 	public void configuraOuvinte(ActionListener ouvinte) {
 		equalButton.addActionListener(ouvinte);
 	}
-
-	//
-	// Mecanismo para exibição de mensagens
-	//
-
 }
